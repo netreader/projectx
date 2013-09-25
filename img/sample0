@@ -1,7 +1,0 @@
-count=0
-for file in /usr/local/data/dev/apache-tomcat-6.0.37/webapps/projectx/test/* ; do
-echo $file
-cp $file /usr/local/data/dev/apache-tomcat-6.0.37/webapps/projectx/img/sample$count
-count=`expr $count + 1`
-echo $count
-done
