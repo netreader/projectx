@@ -1,0 +1,72 @@
+<project name="ProjectX" default="war" basedir="../">
+    <description>
+        ProjectX build file
+    </description>
+
+	<property name="project-name" value="projectx"/>
+	
+    <property name="src" location="src"/>
+    <property name="lib" location="lib"/>
+    <property name="conf" location="conf"/>
+    <property name="properties" location="properties"/>
+    <property name="war-file-name" value="${project-name}.war" />
+    <property name="web-directory" location="web" />
+    <property name="web-xml-file" value="${conf}/web.xml" />
+
+    <property name="build" location="build"/>
+    <property name="builder" value="Anand" />
+
+
+	<tstamp prefix="build-info">
+		<format property="current-date" pattern="d-MMMM-yyyy" locale="en" />
+		<format property="current-time" pattern="hh:mm:ss a z" locale="en" />
+	</tstamp>    
+
+    <path id="classpath">
+        <fileset dir="${lib}" includes="**/*.jar"/>
+    </path>	
+
+    <target name="init" depends="clean">
+        <mkdir dir="${build}"/>
+        <mkdir dir="${build}/lib"/>
+        <mkdir dir="${build}/bin"/>
+    </target>
+    <target name="clean" description="clean up" >
+        <delete dir="${build}"/>
+    </target>
+
+    <target name="compile" depends="init" description="compile the source " >
+        <javac srcdir="${src}" destdir="${build}/bin" classpathref="classpath" includeantruntime="false"/>
+        
+        <jar jarfile="${build}/lib/${project-name}.jar" basedir="${build}/bin"/>
+    </target>
+
+    <target name="war" depends="compile" description="generate the distribution" >
+
+        <war destfile="${build}/${war-file-name}" webxml="${web-xml-file}">
+            <fileset dir="${web-directory}">
+                <include name="**/*.*"/>
+            </fileset>
+
+
+            <lib dir="${lib}">
+                <include name="**/*.*"/>
+            </lib>
+            <lib dir="${build}/lib">
+                <include name="${project-name}.jar"/>
+            </lib>
+
+			<manifest>
+				<attribute name="Built-By" value="${builder}" />
+				<attribute name="Built-On" value="${build-info.current-date}" />
+				<attribute name="Built-At" value="${build-info.current-time}" />
+			</manifest>
+
+            <classes dir="${properties}">
+                <include name="*.*" />
+            </classes>
+        </war>
+	
+    </target>
+
+</project>
